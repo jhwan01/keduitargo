@@ -1,0 +1,48 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: samsung
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: samsung-deploy
+  namespace: samsung
+  labels: 
+    app: web
+    part: cloud
+spec:
+  replicas: 3
+  selector: 
+    matchLabels:
+      app: web
+  
+  template: 
+    metadata: 
+      labels: 
+        app: web
+    spec:
+      containers:
+        - name: web
+          image: nginx
+          ports:
+          - containerPort: 80
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: samsung-lb
+  namespace: samsung
+spec:
+  type: LoadBalancer
+  selector:
+    app: web
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
